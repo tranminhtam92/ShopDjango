@@ -66,19 +66,12 @@ def ShopUsingSQL (request):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM src_shop inner join src_comment on src_shop.id = src_comment.id_shop")
     rows = dictfetchall(cursor)
-    print(rows)
-    return Response(rows);
+    result = list(rows)
+    return Response(result);
 
 def dictfetchall(cursor):
     columns = [col[0] for col in cursor.description]
-    rows = [];
-    for row in cursor.fetchall():
-        row = list(row)
-        for index, column in enumerate(row):
-            if isinstance(column, datetime.datetime):
-                row[index]= column.strftime('%m/%d/%Y');
-                rows.append(row);
     return [
         dict(zip(columns, row))
-        for row in rows
+        for row in cursor.fetchall()
     ]
